@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorBackground">#FDF5FC</color>
+    <color name="colorPrimary">#3f3f3f</color>
+    <color name="colorPrimaryDark">#2a2a2a</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="melon">#bcffc3</color>
+    <color name="lightgrey">#ababab</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="offwhite">#F9F1f1</color>
+    <color name="sky">#6f9aff</color>
+    <color name="colorActionBar">#000000</color>
+</resources>

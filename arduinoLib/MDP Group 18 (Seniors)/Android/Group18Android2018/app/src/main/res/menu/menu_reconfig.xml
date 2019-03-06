@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id ="@+id/btn_mainscreen"
+        android:title ="Back to Controller"/>
+
+    <item
+        android:id ="@+id/btn_bluetoothconnect"
+        android:title ="Connect to Bluetooth"/>
+
+</menu>
