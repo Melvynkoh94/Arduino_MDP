@@ -1,7 +1,6 @@
 #include <MsTimer2.h>
 #include <EnableInterrupt.h>
 #include <DualVNH5019MotorShield.h>
-//#include <ArduinoPIDLibrary.h>
 #include <PID_v1.h>
 
 const int LEFT_PULSE = 3;           // M1 - LEFT motor pin number on Arduino board
