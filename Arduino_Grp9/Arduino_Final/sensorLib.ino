@@ -56,18 +56,6 @@ void setupSensorInterrupt() {
   //    MsTimer2::start();
 }
 
-//this function not really used. 
-//It is only used in above setupSensorInterrupt() 
-/*
-void readSensors() {
-  readFrontSensor_1();
-  readFrontSensor_2();
-  readFrontSensor_3();
-  readRightSensor_1();
-  readRightSensor_2();
-  readLeftSensor_1();
-}*/
-
 // read and return the median of (5*11) front left sensor values in grid distance
 int getFrontIR1() {
   double median = readFrontSensor_1();
