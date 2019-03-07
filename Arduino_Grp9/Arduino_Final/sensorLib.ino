@@ -77,7 +77,7 @@ int getFrontIR3() {
 // read and return the median of (5*11) right back sensor values in grid distance
 int getRightIR1() {
   double median = readRightSensor_1();
-  return (shortGrid(median, 7.30, 18, 31.00));
+  return (shortGrid(median, 7.30, 18, 27.00));
 }
 
 // read and return the median of (5*11) right front sensor values in grid distance
@@ -105,7 +105,7 @@ double readFrontSensor_1() {
     
     frontIR1_Median.add(irDistance);    // add in the array  
     if (frontIR1_Median.getCount() == NUM_SAMPLES_MEDIAN) {
-      if (frontIR1_Median.getHighest() - frontIR1_Median.getLowest() > 30)
+      if (frontIR1_Median.getHighest() - frontIR1_Median.getLowest() > 15)
         return -10;
       
       frontIR1_Value = frontIR1_Median.getMedian();
@@ -128,7 +128,7 @@ double readFrontSensor_2() {
     
     frontIR2_Median.add(irDistance);    // add in the array  
     if (frontIR2_Median.getCount() == NUM_SAMPLES_MEDIAN) {
-      if (frontIR2_Median.getHighest() - frontIR2_Median.getLowest() > 10)
+      if (frontIR2_Median.getHighest() - frontIR2_Median.getLowest() > 15)
         return -10;
       frontIR2_Value = frontIR2_Median.getMedian();
     }
@@ -149,7 +149,7 @@ double readFrontSensor_3() {
     
     frontIR3_Median.add(irDistance);    // add in the array  
     if (frontIR3_Median.getCount() == NUM_SAMPLES_MEDIAN) {
-      if (frontIR3_Median.getHighest() - frontIR3_Median.getLowest() > 30)
+      if (frontIR3_Median.getHighest() - frontIR3_Median.getLowest() > 15)
         return -10;
       frontIR3_Value = frontIR3_Median.getMedian();
     }

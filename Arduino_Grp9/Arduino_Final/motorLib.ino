@@ -10,22 +10,20 @@ const int MOVE_MAX_SPEED = 350;     //if target distance more than 60cm
 const int MOVE_MIN_SPEED = 200;     //if target distance less than 60cm
 const int TURN_MAX_SPEED = 300;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
 const int ROTATE_MAX_SPEED = 380;   //used in rotateLeft() and rotateRight()
-const int TURN_TICKS_L = 760;       //change this left encoder ticks value to calibrate left turn 
-const int TURN_TICKS_R = 710;       //change this right encoder ticks value to calibrate right turn 
-//const int TURN_TICKS_R = 763;
+int TURN_TICKS_L = 758;       //change this left encoder ticks value to calibrate left turn 
+int TURN_TICKS_R = 722;       //change this right encoder ticks value to calibrate right turn 
 
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
-const int TICKS[10] = {530, 1190, 1800, 2380, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
+const int TICKS[10] = {525, 1190, 1800, 2380, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
 const double DIST_WALL_CENTER_BOX = 1.58;   //for aligning to the front wall/obstacle. Used in alignFront()
-const double kp = 7.8, ki = 2, kd = 0;  //change values for moving straight line 
-//const double kp = 7.35, ki = 1.25, kd = 5;  //whenever we increase kd, it goes to the right
-//const double kp = 7.90, ki = 1.25, kd = 0;
-//const double kp = 7.00, ki = 1.25, kd = 0;
-//const double kp = 7.35, ki = 2, kd = 0;
+const double kp = 7.8, ki = 1.25, kd = 0;  //for 1 grid 
+//const double kp =  7.8, ki = 2, kd = 0; //for =4 grids
+//const double kp =  7.8, ki = 2.5, kd = 0; //for =5 grids
+
 
 
 int TENCM_TICKS_OFFSET = 0; //not used
@@ -193,10 +191,10 @@ void turnLeft(int angle) {
 
   if (angle >= 90) {
     for (i = 0; i<angle; i+=90) {
-      Serial.println(i);
+      //Serial.println(i);
       initializeTick();
       initializeMotor_Start();
-      while (tick_R < TURN_TICKS_L || tick_L - 15 < TURN_TICKS_L) {
+      while (tick_R < TURN_TICKS_L || tick_L < TURN_TICKS_L) { // -15
         if (myPID.Compute())
           md.setSpeeds(-(currentSpeed + speed_O), currentSpeed - speed_O);
       }
@@ -235,7 +233,7 @@ void turnRight(int angle) {
   if (angle >= 90) {
     for (i=0; i<angle; i=i+90) {
       initializeTick();
-      while (tick_R < (TURN_TICKS_R) || tick_L -16 < (TURN_TICKS_R)) {
+      while (tick_R < (TURN_TICKS_R) || tick_L < (TURN_TICKS_R)) { // -16
         if (myPID.Compute())
           md.setSpeeds((currentSpeed + speed_O), -(currentSpeed - speed_O));
       }
@@ -244,7 +242,7 @@ void turnRight(int angle) {
   if (angle - i > 0) {
     turnRightDeg(angle-i);
   }
-  initializeMotor_End();   //brakes the motor
+  initializeMotorTurn_End();   //brakes the motor
 }
 
 // will turn <90 degree
@@ -532,20 +530,10 @@ void alignRight() {
   //double diff = (readRightSensor_2() - 4.51) - (readRightSensor_1() -0.16);
   double diff = readRightSensor_2() - readRightSensor_1();
   
-  while (abs(diff) > 0.4)
+  while (abs(diff) > 0.4 && abs(diff) < 4)
   {
     rotateRight(abs(diff*8), abs(diff)/diff*-1);
-    /*if (diff < 0)
-    {
-      rotateRight(abs(diff*8), 1);
-      //Serial.println("First if");
-    }
-    else if (diff > 0)
-    {
-      rotateRight(abs(diff*8), -1);
-      //Serial.println("Second if");
-    }*/
-     diff = readRightSensor_2() - readRightSensor_1();
+    diff = readRightSensor_2() - readRightSensor_1();
   }
 }
 
@@ -553,6 +541,60 @@ void rotateRight(int distance, int direct) {
   initializeTick();
   initializeMotor_Start();
   double currentSpeed = ROTATE_MAX_SPEED;
+
+  while (tick_R < distance) {
+    if (myPID.Compute())
+      md.setSpeeds(0, direct*(currentSpeed - speed_O));
+  }
+  initializeMotor_End();
+}
+
+void rotateLeft(int distance, int direct) {
+  initializeTick();
+  initializeMotor_Start();
+
+  double currentSpeed = ROTATE_MAX_SPEED;
+  while (tick_L < distance) {
+    if (myPID.Compute())
+      md.setSpeeds(direct*(currentSpeed - speed_O), 0);
+  }
+  initializeMotor_End();
+}
+
+void alignRightStart(bool left) {
+  delay(2);
+  //double diff = (readRightSensor_2() - 4.51) - (readRightSensor_1() -0.16);
+  double diff = readRightSensor_2() - readRightSensor_1();
+  
+  while (abs(diff) > 0.4 && abs(diff) < 4)
+  {
+    if (left)
+      rotateRightStart(abs(diff*8), abs(diff)/diff*-1, true);
+    else
+      rotateRightStart(abs(diff*8), abs(diff)/diff*-1, false);
+    diff = readRightSensor_2() - readRightSensor_1();
+  }
+}
+
+void rotateRightStart(int distance, int direct, bool left) {
+  initializeTick();
+  initializeMotor_Start();
+  double currentSpeed = ROTATE_MAX_SPEED;
+
+  if (left)
+  {
+    if (direct == -1)
+      TURN_TICKS_R += distance;
+    else
+      TURN_TICKS_R -= distance;
+  }
+  else
+  {
+    if (direct == -1)
+      TURN_TICKS_R += distance;
+    else
+      TURN_TICKS_R -= distance;
+  }
   while (tick_R < distance) {
     if (myPID.Compute())
       md.setSpeeds(0, direct*(currentSpeed - speed_O));
@@ -564,7 +606,7 @@ void rotateBoth(int distanceLeft, int distanceRight, int direct) {
   initializeTick();
   initializeMotor_Start();
   double currentSpeed = MOVE_MIN_SPEED;
-  while (tick_R < distanceRight || tick_L > distanceLeft) {
+  while (tick_R < distanceRight || tick_L < distanceLeft) {
     if (myPID.Compute())
       md.setSpeeds(direct*(currentSpeed + speed_O), direct*(currentSpeed - speed_O));
   }
@@ -573,46 +615,32 @@ void rotateBoth(int distanceLeft, int distanceRight, int direct) {
 
 void alignFront() {
   delay(2);
-  double desiredDistanceSensor1 = 0.32;
-  double desiredDistanceSensor3 = 0.74;
+  //Serial.println(readFrontSensor_1());
+  //Serial.println(readFrontSensor_3());
+  double desiredDistanceSensor1 = -1.33;
+  double desiredDistanceSensor3 = -1.44;
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
 
-  while (abs(diffLeft) >= 0.4 || abs(diffRight) >= 0.4)
-  {  
-    Serial.println(diffLeft);
-    Serial.println(diffRight);
-    if (diffLeft >= 0.4 && diffRight >= 0.4)
+  while ((abs(diffLeft) >= 0.2 && abs(diffLeft) < 4)|| (abs(diffRight) >= 0.2 && abs(diffRight) < 4))
+  {    
+    //Serial.println(diffLeft);
+    //Serial.println(diffRight);
+    /*
+    if (abs(diffLeft) >= 0.2 && abs(diffRight) >= 0.2)
     {
-      rotateBoth(diffLeft*2, diffRight*2, 1);
+      Serial.println("1st=");
+      rotateBoth(diffLeft*2, diffRight*2, abs(diffLeft)/diffLeft);
+    }*/
+    if (abs(diffLeft) >= 0.2)
+    {
+      //Serial.println("2nd====");
+      rotateLeft(abs(diffLeft*4), abs(diffLeft)/diffLeft*1);
     }
-    else if (diffLeft <= 0.4 && diffRight <= 0.4)
+    else if (abs(diffRight) >= 0.2)
     {
-      rotateBoth(diffLeft*2, diffRight*2, -1);
-    }
-    else if (diffLeft >= 0.2 && diffRight <= 0.2)
-    {
-      
-    }
-    else if (diffLeft <= 0.2 && diffRight >= 0.2)
-    {
-      
-    }
-    else if (diffLeft >= 0.2)
-    {
-      
-    }
-    else if (diffLeft <= 0.2)
-    {
-      
-    }
-    else if (diffRight >= 0.2)
-    {
-      
-    }
-    else if (diffRight <= 0.2)
-    {
-      
+      //Serial.println("3rd============");
+      rotateRight(abs(diffRight*4), abs(diffRight)/diffRight*1);
     }
     diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
     diffRight = readFrontSensor_3() - desiredDistanceSensor3;
