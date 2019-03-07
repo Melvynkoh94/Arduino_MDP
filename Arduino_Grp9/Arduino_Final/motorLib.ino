@@ -617,8 +617,8 @@ void alignFront() {
   delay(2);
   //Serial.println(readFrontSensor_1());
   //Serial.println(readFrontSensor_3());
-  double desiredDistanceSensor1 = -1.33;
-  double desiredDistanceSensor3 = -1.44;
+  double desiredDistanceSensor1 = -1.73;
+  double desiredDistanceSensor3 = -1.84;
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
 
