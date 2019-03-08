@@ -6,21 +6,25 @@
 const int LEFT_PULSE = 3;           // M1 - LEFT motor pin number on Arduino board
 const int RIGHT_PULSE = 11;         // M2 - RIGHT motor pin number on Arduino board
 const int MOVE_FAST_SPEED = 380;    //if target distance more than 30cm 
-const int MOVE_MAX_SPEED = 350;     //if target distance more than 60cm
+//const int MOVE_MAX_SPEED = 350;     //if target distance more than 60cm
+const int MOVE_MAX_SPEED = 200;     //if target distance more than 60cm
+
 const int MOVE_MIN_SPEED = 200;     //if target distance less than 60cm
-const int TURN_MAX_SPEED = 300;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
+//const int TURN_MAX_SPEED = 300;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
+const int TURN_MAX_SPEED = 200;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
+
 const int ROTATE_MAX_SPEED = 380;   //used in rotateLeft() and rotateRight()
-int TURN_TICKS_L = 758;       //change this left encoder ticks value to calibrate left turn 
-int TURN_TICKS_R = 722;       //change this right encoder ticks value to calibrate right turn 
+int TURN_TICKS_L = 776;       //change this left encoder ticks value to calibrate left turn 
+int TURN_TICKS_R = 765;       //change this right encoder ticks value to calibrate right turn 
 
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
-const int TICKS[10] = {525, 1190, 1800, 2380, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
+const int TICKS[10] = {530, 1190, 1800, 2325, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
 const double DIST_WALL_CENTER_BOX = 1.58;   //for aligning to the front wall/obstacle. Used in alignFront()
-const double kp = 7.8, ki = 1.25, kd = 0;  //for 1 grid 
+const double kp = 7.8, ki = 1.8, kd = 0;  //for 1 grid 
 //const double kp =  7.8, ki = 2, kd = 0; //for =4 grids
 //const double kp =  7.8, ki = 2.5, kd = 0; //for =5 grids
 
@@ -615,15 +619,23 @@ void rotateBoth(int distanceLeft, int distanceRight, int direct) {
 
 void alignFront() {
   delay(2);
-  //Serial.println(readFrontSensor_1());
-  //Serial.println(readFrontSensor_3());
-  double desiredDistanceSensor1 = -1.73;
-  double desiredDistanceSensor3 = -1.84;
+  /*
+  while (true)
+  {
+    Serial.print(readFrontSensor_1());
+    Serial.print(",");
+    Serial.print(readFrontSensor_3());
+    Serial.print("\n");
+  }
+  */
+  int count = 0;
+  double desiredDistanceSensor1 = -1.83;
+  double desiredDistanceSensor3 = -1.70;
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
 
   while ((abs(diffLeft) >= 0.2 && abs(diffLeft) < 4)|| (abs(diffRight) >= 0.2 && abs(diffRight) < 4))
-  {    
+  {   
     //Serial.println(diffLeft);
     //Serial.println(diffRight);
     /*
@@ -644,5 +656,9 @@ void alignFront() {
     }
     diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
     diffRight = readFrontSensor_3() - desiredDistanceSensor3;
+
+    count++;
+    if (count >= 10)
+      break;
   }
 }

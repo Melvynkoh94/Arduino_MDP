@@ -18,7 +18,7 @@ void loop() {
     //Serial.println("Waiting for connection");
   }
   //testRPM(400, 400);
-/*
+
   // for hardcode string
   // to store char array for movement value
   char gridMoveValueChar[100];
@@ -164,10 +164,10 @@ void loop() {
         alignRight();
         break;
     }
-  }*/
+  }
   
   //delay(10000);
-  
+  /*
   //for rceiving string from rpi 
   // to store char array for movement value
   char gridMoveValueChar[100];  
@@ -294,7 +294,7 @@ void loop() {
       case '\n':
         break;     
     }
-  }
+  }*/
 }
 
 // serial codes

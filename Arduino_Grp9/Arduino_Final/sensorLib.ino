@@ -59,31 +59,31 @@ void setupSensorInterrupt() {
 // read and return the median of (5*11) front left sensor values in grid distance
 int getFrontIR1() {
   double median = readFrontSensor_1();
-  return (shortGrid(median, 6.60, 19.60, 33.70)); 
+  return (shortGrid(median, 2.10, 16.40, 29.00)); 
 }
 
 // read and return the median of (5*11) front center sensor values in grid distance
 int getFrontIR2() {
   double median = readFrontSensor_2();
-  return (shortGrid(median, 6.50, 17, 30.00)); 
+  return (shortGrid(median, 2.00, 14.30, 30.00)); 
 }
 
 // read and return the median of (5*11) front right sensor values in grid distance
 int getFrontIR3() {
   double median = readFrontSensor_3();
-  return (shortGrid(median, 7, 17.90, 25.50));  
+  return (shortGrid(median, 2.30, 16.40, 25.50));  
 }
 
 // read and return the median of (5*11) right back sensor values in grid distance
 int getRightIR1() {
   double median = readRightSensor_1();
-  return (shortGrid(median, 7.30, 18, 27.00));
+  return (shortGrid(median, 7.30, 17, 24.00));
 }
 
 // read and return the median of (5*11) right front sensor values in grid distance
 int getRightIR2() {
   double median = readRightSensor_2();
-  return (shortGrid(median, 7.50, 20, 50));
+  return (shortGrid(median, 7.50, 20, 42));
 }
 
 // read and return the median of (5*11) left front sensor values in grid distance
@@ -242,7 +242,7 @@ int shortGrid(double distance, double offset1, double offset2,  double offset3) 
 }
 
 // determine which grid it belongs for long sensor (edit accordingly, see how far it can detect accurately - thad)
-int longGrid(int distance) {
+int longGrid(double distance) {
   //Serial.println(distance);
   //Serial.print(",");
   if (distance == -10)
@@ -253,9 +253,9 @@ int longGrid(int distance) {
     return 2;
   else if (distance <= 39)
     return 3;
-  else if (distance <= 50)
+  else if (distance <= 48.90)
     return 4;
-  else if (distance <= 59)
+  else if (distance <= 54.00)
     return 5;
   else if (distance <= 66)
     return 6;
