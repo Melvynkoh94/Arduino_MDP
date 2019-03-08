@@ -23,7 +23,7 @@ void loop() {
   // to store char array for movement value
   char gridMoveValueChar[100];
   char movement;
-  String test = "W4|A"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
+  String test = "U"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
   String gridMoveValueString;
   int gridMoveValueInt;
   int count;
@@ -164,8 +164,8 @@ void loop() {
         alignRight();
         break;
     }
-  }*/
-  
+  }
+  */
   //delay(10000);
   
   //for rceiving string from rpi 
@@ -175,15 +175,19 @@ void loop() {
   String gridMoveValueString;
   int count;
   
-  int dummy = Serial.peek();
-  if (dummy > 90)
-  {
-    //Serial.println(dummy);
-    //dummy = Serial.read();
-  }
+  int dummy;
 
   // while data is available in the serial buffer
   while (Serial.available() > 0){
+
+    dummy = Serial.peek();
+    if (dummy > 90 || dummy < 49)
+    {
+      //Serial.println(dummy);
+      dummy = Serial.read();
+      continue;
+    }
+    
     gridMoveValueString = "";
     count = 0;
     char character = Serial.read();
@@ -195,11 +199,6 @@ void loop() {
 
     if (character == '|')
       continue;
-    //if (character > 90)
-    //{
-   //   Serial.println("XL");
-   //   continue;
-  //  }
     if (character == '\0' || character == '\n')
       break;
     if (nextChar == '|') {
@@ -226,7 +225,7 @@ void loop() {
       // move forward 
       case 'W':
         moveForward(gridMoveValueInt * 10);
-        delay(100);
+        delay(10);
         printSensorReading();
         break;
       // move forward fast (for fastestpath or clear straight path)
@@ -241,13 +240,13 @@ void loop() {
           turnLeft(gridMoveValueInt*90);
         else
           turnLeft(gridMoveValueInt);   // more than 12, will be seen as degrees to be turned
-        delay(100);
+        delay(10);
         printSensorReading();
         break;
       // move backward
       case 'S':
         moveBackwards(gridMoveValueInt * 10);
-        delay(100);
+        delay(10);
         printSensorReading();
         break;
       // move backward fast
@@ -262,22 +261,25 @@ void loop() {
           turnRight(gridMoveValueInt*90);
         else
           turnRight(gridMoveValueInt);  // more than 12, will be seen as degrees to be turned
-        delay(100);
+        delay(10);
         printSensorReading();
         break;
       // to get current sensor reading
       case 'K':
         //Serial.println("Inside K");
+        Serial.println("Xignore");
         printSensorReading();
         break;
       case 'P':
         alignRight();
-        delay(100);
+        Serial.println("Xignore");
+        delay(10);
         printSensorReading();
         break;
       case 'O':
         alignFront();
-        delay(100);
+        Serial.println("Xignore");
+        delay(10);
         printSensorReading();
         break;  
       case 'M':

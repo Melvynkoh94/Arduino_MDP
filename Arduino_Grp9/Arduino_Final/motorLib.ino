@@ -20,7 +20,7 @@ int TURN_TICKS_R = 765;       //change this right encoder ticks value to calibra
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
-const int TICKS[10] = {530, 1190, 1800, 2325, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
+const int TICKS[10] = {542, 1190, 1800, 2325, 3020, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
 const double DIST_WALL_CENTER_BOX = 1.58;   //for aligning to the front wall/obstacle. Used in alignFront()
@@ -67,6 +67,11 @@ void setupPID() {
 
 // when forward command is received, taking in the parameter of how many cm it should move
 void moveForward(int distance) {
+  if (distance == 0)
+    distance = 1;
+  Serial.print("Xforward: ");
+  Serial.print(distance);
+  Serial.print("\n");
   initializeTick();   // set all tick to 0
   initializeMotor_Start();  // set motor and brake to 0
   distance = cmToTicks(distance); // convert grid movement to tick value
@@ -128,6 +133,11 @@ void moveForwardFast(int distance) {
 
 // when backward command is received, taking in the parameter of how many cm it should move
 void moveBackwards(int distance) {
+  if (distance == 0)
+    distance = 1;
+  Serial.print("Xbackward: ");
+  Serial.print(distance);
+  Serial.print("\n");
   initializeTick();
   initializeMotor_Start();
   distance = cmToTicks(distance);
@@ -189,6 +199,11 @@ void moveBackwardsFast(int distance) {
 
 // when left command is received, taking in the parameter of how much angle it should rotate anticlockwise
 void turnLeft(int angle) {
+  if (angle == 0)
+    angle = 90;
+  Serial.print("Xleft: ");
+  Serial.print(angle);
+  Serial.print("\n");
   //initializeMotor_Start();
   int i=0;    // for loop iterator
   double currentSpeed = TURN_MAX_SPEED;
@@ -230,6 +245,11 @@ void turnLeftDeg(int angle) {
 
 // when right command is received, taking in the parameter of how much angle it should rotate clockwise
 void turnRight(int angle) {
+  if (angle == 0)
+    angle = 90;
+  Serial.print("Xright: ");
+  Serial.print(angle);
+  Serial.print("\n");
   initializeMotor_Start();
   int i=0;    // for loop iterator
   double currentSpeed = TURN_MAX_SPEED;
@@ -647,12 +667,12 @@ void alignFront() {
     if (abs(diffLeft) >= 0.2)
     {
       //Serial.println("2nd====");
-      rotateLeft(abs(diffLeft*4), abs(diffLeft)/diffLeft*1);
+      rotateLeft(abs(diffLeft*8), abs(diffLeft)/diffLeft*1);
     }
     else if (abs(diffRight) >= 0.2)
     {
       //Serial.println("3rd============");
-      rotateRight(abs(diffRight*4), abs(diffRight)/diffRight*1);
+      rotateRight(abs(diffRight*8), abs(diffRight)/diffRight*1);
     }
     diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
     diffRight = readFrontSensor_3() - desiredDistanceSensor3;
