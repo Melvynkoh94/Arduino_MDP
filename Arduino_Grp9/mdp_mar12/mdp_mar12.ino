@@ -7,24 +7,45 @@ void setup() {
   setupPID();
   // make arduino pause execution for all code for the stated milliseconds
   // for the analog-to-digital converter to settle after the last reading
+
+  //                       _oo0oo_
+  //                      o8888888o
+  //                      88" . "88
+  //                      (| -_- |)
+  //                      0\  =  /0
+  //                    ___/`---'\___
+  //                  .' \\|     |// '.
+  //                 / \\|||  :  |||// \
+  //                / _||||| -:- |||||- \
+  //               |   | \\\  -  /// |   |
+  //               | \_|  ''\---/''  |_/ |
+  //               \  .-\__  '-'  ___/-. /
+  //             ___'. .'  /--.--\  `. .'___
+  //          ."" '<  `.___\_<|>_/___.' >' "".
+  //         | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+  //         \  \ `_.   \_ __\ /__ _/   .-` /  /
+  //     =====`-.____`.___ \_____/___.-`___.-'=====
+  //                       `=---='
+  //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
   delay(20);  
 }
 
 // the loop routine runs over and over again forever
 void loop() {
-  delay(2);
+  //delay(2);
+
   // if not connected
   if (!Serial) {
     //Serial.println("Waiting for connection");
   }
   //testRPM(400, 400);
-
 /*
   // for hardcode string
   // to store char array for movement value
   char gridMoveValueChar[100];
   char movement;
-  String test = "W9"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
+  String test = "W"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
   String gridMoveValueString;
   int gridMoveValueInt;
   int count;
@@ -73,6 +94,7 @@ void loop() {
         delay(10);
         printDistanceReading();
         printSensorReading();
+        delay(1000);
         break;
       // move forward fast (for fastestpath or clear straight path)
       case 'F':
@@ -112,7 +134,7 @@ void loop() {
           turnRight(gridMoveValueInt*90);
         else
           turnRight(gridMoveValueInt);  // more than 12, will be seen as degrees to be turned
-        delay(10);
+        delay(10000);
         printDistanceReading();
         printSensorReading();
         pos = pos + 1;
@@ -123,51 +145,34 @@ void loop() {
         printSensorReading();
         pos = pos + 1;
         break;
-      case 'I':
-        delay(2000);
-        turnLeft(45);
-        delay(2000);
-        //moveForwardTick(2380);
-        //delay(2000);
-        turnRight(45);
-        //turnRight(60);
-        //delay(2000);
-        //moveForwardTick(2380);
-        //turnLeft(60);
-        //delay(2000);
-        break;
-      case 'Y':
-        //alignRight();
-        alignFront();
-        delay(10);
-        break;
       case 'P':
-        //avoid();
-        alignRight();
+        alignRight(gridMoveValueInt);
         delay(10);
         break;
       case 'O':
         alignFront();
-        //avoidDiagonal();
         delay(10);
         break;
+      case 'N':
+        forwardCalibration(gridMoveValueInt);
+        break;
       case 'M':
-        alignRight();
+        alignRight(1);
         turnRight(90);
-        alignRightStart(false);
+        alignRight(3);
         alignFront();
         turnRight(90);
         alignFront();
         turnLeft(90);
-        alignRightStart(true);
+        alignRight(2);
         alignFront();
         turnLeft(90);
-        alignRight();
+        alignRight(1);
+        delay(1000);
         break;
     }
   }
   */
-  //delay(10000);
   
   //for rceiving string from rpi 
   // to store char array for movement value
@@ -268,29 +273,30 @@ void loop() {
       // to get current sensor reading
       case 'K':
         //Serial.println("Inside K");
-        Serial.println("Xignore");
         printSensorReading();
         break;
       case 'P':
-        alignRight();
-        Serial.println("Xignore");
+        alignRight(gridMoveValueInt);
         delay(10);
         printSensorReading();
         break;
       case 'O':
         alignFront();
-        Serial.println("Xignore");
         delay(10);
         printSensorReading();
         break;  
       case 'M':
+        alignRight(1);
         turnRight(90);
-        alignRightStart(false);
+        alignRight(3);
+        alignFront();
         turnRight(90);
-        alignRightStart(false);
+        alignFront();
         turnLeft(90);
-        alignRightStart(true);
+        alignRight(2);
+        alignFront();
         turnLeft(90);
+        alignRight(1);
         break;
       case '|':
       case '\0':

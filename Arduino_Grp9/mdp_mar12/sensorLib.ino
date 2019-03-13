@@ -65,7 +65,7 @@ int getFrontIR1() {
 // read and return the median of (5*11) front center sensor values in grid distance
 int getFrontIR2() {
   double median = readFrontSensor_2();
-  return (shortGrid(median, 2.80, 13.00, 27.00)); 
+  return (shortGrid(median, 2.80, 13.00, 26.10)); 
 }
 
 // read and return the median of (5*11) front right sensor values in grid distance
@@ -77,13 +77,13 @@ int getFrontIR3() {
 // read and return the median of (5*11) right back sensor values in grid distance
 int getRightIR1() {
   double median = readRightSensor_1();
-  return (shortGrid(median, 7.30, 17, 24.00));
+  return (shortGrid(median, 4.45, 14.60, 24.40));
 }
 
 // read and return the median of (5*11) right front sensor values in grid distance
 int getRightIR2() {
   double median = readRightSensor_2();
-  return (shortGrid(median, 7.50, 20, 42));
+  return (shortGrid(median, 5.50, 17.20, 29.20));
 }
 
 // read and return the median of (5*11) left front sensor values in grid distance
@@ -162,7 +162,7 @@ double readRightSensor_1() {
   RunningMedian rightIR1_Median = RunningMedian(NUM_SAMPLES_MEDIAN);
   for (int n = 0; n < NUM_SAMPLES_MEDIAN; n++) {
     //double irDistance = rightIR_1.getDistance() - 7;   // for offseting the value for sensor distance <-11>
-    double irDistance = rightIR_1.distance() - (11.09 + 0.58);
+    double irDistance = rightIR_1.distance() - (11.09 + 0.12);
     //reference point at 3x3 grid boundary (30cmx30cm) is 0cm
     //anything nearer than that to the IR sensors is default set to 0
 
@@ -183,7 +183,7 @@ double readRightSensor_2() {
   RunningMedian rightIR2_Median = RunningMedian(NUM_SAMPLES_MEDIAN);
   for (int n = 0; n < NUM_SAMPLES_MEDIAN; n++) {
     //double irDistance = rightIR_2.getDistance() - 11;   // for offseting the value for sensor distance <-11>
-    double irDistance = rightIR_2.distance() - (10.70 - 0.08);
+    double irDistance = rightIR_2.distance() - (10.70 - 0.21);
     //reference point at 3x3 grid boundary (30cmx30cm) is 0cm
     //anything nearer than that to the IR sensors is default set to 0
 
@@ -247,20 +247,20 @@ int longGrid(double distance) {
   //Serial.print(",");
   if (distance == -10)
     return -1;
-  else if (distance <= 22)
+  else if (distance <= 21.40)
     return 1;
-  else if (distance <= 29)
+  else if (distance <= 27.35)
     return 2;
-  else if (distance <= 39)
+  else if (distance <= 36.70)
     return 3;
-  else if (distance <= 48.90)
+  else if (distance <= 46.90)
     return 4;
-  else if (distance <= 54.00)
+  else if (distance <= 53.40)
     return 5;
   else if (distance <= 66)
-    return 6;
+    return -1;
   else if (distance <= 70)
-    return 7;
+    return -1;
   else
     return -1;
   //return distance;
