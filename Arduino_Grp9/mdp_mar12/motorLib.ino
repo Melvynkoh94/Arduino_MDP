@@ -15,17 +15,17 @@ const int TURN_MAX_SPEED = 350;     //change this value to calibrate turning. If
 
 const int ROTATE_MAX_SPEED = 380;   //used in rotateLeft() and rotateRight()
 int TURN_TICKS_L = 685;       //change this left encoder ticks value to calibrate left turn 
-int TURN_TICKS_R = 690;       //change this right encoder ticks value to calibrate right turn 
+int TURN_TICKS_R = 685;       //change this right encoder ticks value to calibrate right turn 
 
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
-int TICKS[10] = {553, 1120, 1708, 2290, 2920, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
+int TICKS[10] = {555, 1095, 1680, 2285, 2910, 3615, 4195, 4775, 5390, 0};  // for movement of each grid
 //int TICKS[10] = {495, 1190, 1800, 2325, 3020, 3615, 4195, 4775, 5390, 0};  // for brake with interval
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
 const double DIST_WALL_CENTER_BOX = 1.58;   //for aligning to the front wall/obstacle. Used in alignFront()
-const double kp = 7.8, ki = 1.8, kd = 0;  //for 1 grid
+const double kp = 7.8, ki = 2, kd = 0;  //for 1 grid
 //const double kp =  7.8, ki = 2, kd = 0; //for =4 grids
 const double kp2 =  7.8, ki2 = 2.5, kd2 = 0; //for =5 grids
 
@@ -601,10 +601,12 @@ void alignRight(int noLeftRight) {
   {
     if (noLeftRight == 1)
       rotateRight(abs(diff*8), abs(diff)/diff*-1);
+      
     else if (noLeftRight == 2)
       adjustTick(abs(diff*8), abs(diff)/diff*-1, true);
     else if (noLeftRight == 3)
       adjustTick(abs(diff*8), abs(diff)/diff*-1, false);
+      
     
     diff = (readRightSensor_2()-0.7) - readRightSensor_1();
   }

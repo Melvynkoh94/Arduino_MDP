@@ -33,7 +33,8 @@ void setup() {
 
 // the loop routine runs over and over again forever
 void loop() {
-  //delay(2);
+  delay(200);
+  
 
   // if not connected
   if (!Serial) {
@@ -45,7 +46,7 @@ void loop() {
   // to store char array for movement value
   char gridMoveValueChar[100];
   char movement;
-  String test = "W"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
+  String test = "W1"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
   String gridMoveValueString;
   int gridMoveValueInt;
   int count;
@@ -171,8 +172,8 @@ void loop() {
         delay(1000);
         break;
     }
-  }
-  */
+  }*/
+  
   
   //for rceiving string from rpi 
   // to store char array for movement value
