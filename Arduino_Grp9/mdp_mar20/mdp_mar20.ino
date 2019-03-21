@@ -32,7 +32,7 @@ void setup() {
   //                       `=---='
   //     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   
-  delay(20);  
+    (20);  
 }
 
 // the loop routine runs over and over again forever
@@ -184,8 +184,8 @@ void loop() {
         turnRight(90);
         break;
     }
-  }*/
-  
+  }
+  */
   //for rceiving string from rpi 
   // to store char array for movement value
   int gridMoveValueInt;
@@ -206,19 +206,17 @@ void loop() {
     
     gridMoveValueString = "";
     char character = Serial.read();
-    char nextChar = Serial.peek();
+    //char nextChar = Serial.peek();
 
     if (character == '|')
       continue;
     if (character == '\0' || character == '\n')
       break;
-    if (nextChar == '|') {
+    /*if (nextChar == '|') {
       gridMoveValueString += '1';
-    } else {
-        nextChar = Serial.read();
-        gridMoveValueString += nextChar;
-    }
-    
+    } else {*/
+    char nextChar = Serial.read();
+    gridMoveValueString += nextChar;
     gridMoveValueInt = gridMoveValueString.toInt();
   
     // read the next character of the serial buffer
@@ -253,7 +251,7 @@ void loop() {
       // move backward fast
       case 'B':
         moveBackwardsFast(gridMoveValueInt * 10);
-        delay(100);
+        delay(10);
         printSensorReading();
         break;
       // turn right

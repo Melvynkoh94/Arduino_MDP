@@ -14,13 +14,13 @@ const int MOVE_MIN_SPEED = 200;     //if target distance less than 60cm
 const int TURN_MAX_SPEED = 350;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
 
 const int ROTATE_MAX_SPEED = 380;   //used in rotateLeft() and rotateRight()
-int TURN_TICKS_L = 695;       //change this left encoder ticks value to calibrate left turn 
-int TURN_TICKS_R = 697;       //change this right encoder ticks value to calibrate right turn 
+int TURN_TICKS_L = 687;       //change this left encoder ticks value to calibrate left turn 
+int TURN_TICKS_R = 692;       //change this right encoder ticks value to calibrate right turn 
 
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
-int TICKS[10] = {478, 1095, 1680, 2285, 2910, 3470, 4050, 4775, 5390, 0};  // for movement of each grid
+int TICKS[10] = {470, 1070, 1670, 2260, 2870, 3470, 4050, 4775, 5390, 0};  // for movement of each grid
 //int TICKS[10] = {495, 1190, 1800, 2325, 3020, 3615, 4195, 4775, 5390, 0};  // for brake with interval
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
@@ -107,8 +107,9 @@ void moveForward(int distancee) {
     {
       if (myPID2.Compute()) {
         if (initialStatus) {
-          md.setSpeeds(0, currentSpeed - speed_O);
-          delay(2);         
+          //md.setSpeeds(0, currentSpeed - speed_O);
+          //md.setSpeeds(currentSpeed + speed_O, 0);
+          //delay(2);         
           initialStatus = false;
         }
         
@@ -119,30 +120,30 @@ void moveForward(int distancee) {
     }
   }
   if (distancee == 10)
-  {
-    initializeMotorFront_End();  //brakes the motor
+  {/*
+    initializeMotor2_End();  //brakes the motor
     initializeTick();   // set all tick to 0
     initializeMotor_Start();  // set motor and brake to 0
-    while (tick_R < 4) { // -15
+    while (tick_R < 3) { // -15
         if (myPID.Compute())
         {
           md.setSpeeds(0, currentSpeed - speed_O);
         }
-      }
+      }*/
       initializeMotor2_End();   //brakes the motor
   }
   else
-  {
+  {/*
     initializeMotorFront_End();  //brakes the motor
     initializeTick();   // set all tick to 0
     initializeMotor_Start();  // set motor and brake to 0
-    while (tick_L < 2) { // -15
+    while (tick_R < 5) { // -15
         if (myPID.Compute())
         {
           md.setSpeeds(currentSpeed + speed_O, 0);
         }
-      }
-      initializeMotor2_End();   //brakes the motor
+      }*/
+    initializeMotor3_End();   //brakes the motor
   }
 }
 
@@ -393,7 +394,21 @@ void initializeMotor2_End() {
   //md.setBrakes(400, 400);
   
   for (int i = 200; i <400; i+=50) {
-    md.setBrakes(i*1.1, i);
+    md.setBrakes(i*1.05, i);
+    delay(20);
+  }
+  
+  delay(50);
+}
+
+// brakes when moving forward (please revise) - thad
+void initializeMotor3_End() {
+  md.setSpeeds(0, 0);
+  //md.setBrakes(350, 347);
+  //md.setBrakes(400, 400);
+  
+  for (int i = 200; i <400; i+=50) {
+    md.setBrakes(i*1.08, i);
     delay(20);
   }
   
@@ -631,13 +646,13 @@ void alignRight(int noLeftRight) {
 
   int count = 0;
 
-  double diff = (readRightSensor_2()+0.1) - (readRightSensor_1()-0.50); // Sensor2, adding allow it to move closer to the wall
+  double diff = (readRightSensor_2()+0.18) - (readRightSensor_1()-0.09); // Sensor2, adding allow it to move closer to the wall
   /*while (true)
     {
       diff = (readRightSensor_2()) - (readRightSensor_1());
-      Serial.print(readRightSensor_2()-0.21);
+      Serial.print(readRightSensor_2());
       Serial.print(",");
-      Serial.print(readRightSensor_1()-0.50);
+      Serial.print(readRightSensor_1()-0.09);
       Serial.print(",");
       Serial.print(diff);
       Serial.print("\n");
@@ -657,7 +672,7 @@ void alignRight(int noLeftRight) {
       adjustTick(abs(diff*8), abs(diff)/diff*-1, false);
     */
     rotateRight(abs(diff*8), abs(diff)/diff*-1);
-    diff = (readRightSensor_2()+0.1) - (readRightSensor_1()-0.50);
+    diff = (readRightSensor_2()+0.18) - (readRightSensor_1()-0.09);
 
     count++;
   }
@@ -807,9 +822,9 @@ void alignFront() {
   
   /*while (true)
   {
-    Serial.print(readFrontSensor_1()+0.64);
+    Serial.print(readFrontSensor_1() + 0.30); // +0.64
     Serial.print(",");
-    Serial.print(readFrontSensor_3()+0.85);
+    Serial.print(readFrontSensor_3() + 0.52); // +0.85
     Serial.print("\n");
 
     double desiredDistanceSensor1 = -0.64;  // - 0.8 more
@@ -819,8 +834,8 @@ void alignFront() {
   }*/
   
   int count = 0;
-  double desiredDistanceSensor1 = -1.10;  // minus more means nearer to wall
-  double desiredDistanceSensor3 = -1.31;  // plus more means further from wall
+  double desiredDistanceSensor1 = -0.45;  // minus more means nearer to wall
+  double desiredDistanceSensor3 = -0.67;  // plus more means further from wall
   
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
@@ -864,8 +879,8 @@ void alignFrontStart() {
     Serial.print(readFrontSensor_3());
     Serial.print("\n");
   }*/
-  double desiredDistanceSensor1 = -1.10;  // - 0.5 more
-  double desiredDistanceSensor3 = -1.31;  // - 0.5 more
+  double desiredDistanceSensor1 = -0.45;  // - 0.5 more
+  double desiredDistanceSensor3 = -0.67;  // - 0.5 more
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
 
