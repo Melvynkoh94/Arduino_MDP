@@ -37,19 +37,20 @@ void setup() {
 
 // the loop routine runs over and over again forever
 void loop() {
-  delay(2);
+  delay(2000);
 
   // if not connected
   if (!Serial) {
     //Serial.println("Waiting for connection");
   }
   //testRPM(400, 400);
-/*
+
   // for hardcode string
   // to store char array for movement value
   char gridMoveValueChar[100];
   char movement;
-  String test = "O"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
+  //String test = "D1|D1|D1|D1|";
+  String test = "A2|A2|"; //M|D|W|W|W|A|P|W|W|W|W|W|W|W|W|W|A|P|W|W|W|A|P|W|W|W|W|W|W|W|W|W|
   String gridMoveValueString;
   int gridMoveValueInt;
   int count;
@@ -138,7 +139,7 @@ void loop() {
           turnRight(gridMoveValueInt*90);
         else
           turnRight(gridMoveValueInt);  // more than 12, will be seen as degrees to be turned
-        delay(10000);
+        delay(10);
         printDistanceReading();
         printSensorReading();
         pos = pos + 1;
@@ -185,7 +186,7 @@ void loop() {
         break;
     }
   }
-  */
+  /*
   //for rceiving string from rpi 
   // to store char array for movement value
   int gridMoveValueInt;
@@ -212,9 +213,7 @@ void loop() {
       continue;
     if (character == '\0' || character == '\n')
       break;
-    /*if (nextChar == '|') {
-      gridMoveValueString += '1';
-    } else {*/
+    
     char nextChar = Serial.read();
     gridMoveValueString += nextChar;
     gridMoveValueInt = gridMoveValueString.toInt();
@@ -313,7 +312,7 @@ void loop() {
       case '\n':
         break;     
     }
-  }
+  }*/
 }
 
 // serial codes
