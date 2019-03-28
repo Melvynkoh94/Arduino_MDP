@@ -21,7 +21,7 @@ int TURN_TICKS_R = 692;       //change this right encoder ticks value to calibra
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
 // const int TICKS[10] = {440, 1155, 1760, 2380, 2985, 3615, 4195, 4775, 5370};  
 //int TICKS[10] = {470, 1070, 1670, 2260, 2870, 3470, 4050, 4670, 5265, 0};  // for movement of each grid
-int TICKS[10] = {470, 1075, 1672, 2290, 2890, 3495, 4095, 4715, 5310, 0};  // for movement of each grid
+int TICKS[10] = {475, 1075, 1672, 2290, 2890, 3495, 4095, 4685, 5295, 0};  // for movement of each grid
 const int LEFTTICK[14] = {20, 25, 30, 35, 40, 360, 50, 55, 489, 65, 70, 75, 80, 85};
 const int RIGHTTICK[14] = {20, 25, 30, 35, 40, 313, 50, 55, 450, 65, 70, 75, 80, 85};
 const double DIST_WALL_CENTER_BOX = 1.58;   //for aligning to the front wall/obstacle. Used in alignFront()
@@ -108,8 +108,8 @@ void moveForward(int distancee) {
       if (myPID2.Compute()) {
         if (initialStatus) {
           //md.setSpeeds(0, currentSpeed - speed_O);
-          //md.setSpeeds(currentSpeed + speed_O, 0);
-          //delay(2);         
+          md.setSpeeds(currentSpeed + 2*speed_O, 0);
+          delay(2);         
           initialStatus = false;
         }
         
