@@ -11,11 +11,11 @@ const int MOVE_MAX_SPEED = 350;     //if target distance more than 60cm
 
 const int MOVE_MIN_SPEED = 200;     //if target distance less than 60cm
 //const int TURN_MAX_SPEED = 300;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
-const int TURN_MAX_SPEED = 400;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
+const int TURN_MAX_SPEED = 350;     //change this value to calibrate turning. If the rotation overshoots, decrease the speed 
 
 const int ROTATE_MAX_SPEED = 380;   //used in rotateLeft() and rotateRight()
-int TURN_TICKS_L = 743;       // 687 change this left encoder ticks value to calibrate left turn 
-int TURN_TICKS_R = 735;       // 692 change this right encoder ticks value to calibrate right turn 
+int TURN_TICKS_L = 689;       //change this left encoder ticks value to calibrate left turn 
+int TURN_TICKS_R = 692;       //change this right encoder ticks value to calibrate right turn 
 
 //TICKS[0] for general cm -> ticks calibration. 
 //TICKS[1-9] with specific distance (by grids) e.g. distance=5, TICKS[5] 
@@ -96,8 +96,8 @@ void moveForward(int distancee) {
       if (myPID.Compute()) {
         if (initialStatus) {
           //md.setSpeeds(0, currentSpeed - speed_O);
-          //md.setSpeeds(currentSpeed + speed_O, 0);
-          //delay(0);
+          md.setSpeeds(currentSpeed + speed_O, 0);
+          delay(5);
           initialStatus = false;
         }
         md.setSpeeds(currentSpeed + speed_O, currentSpeed - speed_O);
@@ -109,7 +109,7 @@ void moveForward(int distancee) {
         if (initialStatus) {
           //md.setSpeeds(0, currentSpeed - speed_O);
           md.setSpeeds(currentSpeed + 2*speed_O, 0);
-          delay(2);         
+          delay(7);         
           initialStatus = false;
         }
         
@@ -264,8 +264,7 @@ void turnLeft(int angle) {
       initializeMotor_Start();
       while (tick_R < TURN_TICKS_L || tick_L < TURN_TICKS_L) { // -15
         if (myPID.Compute())
-          //md.setSpeeds(-(currentSpeed + speed_O), currentSpeed - speed_O);
-          md.setSpeeds(-(currentSpeed + 2*speed_O), currentSpeed);
+          md.setSpeeds(-(currentSpeed + speed_O), currentSpeed - speed_O);
       }
       initializeMotorTurn_End();   //brakes the motor
     }
@@ -273,6 +272,7 @@ void turnLeft(int angle) {
   if (angle - i > 0) {
     turnLeftDeg(angle-i);
   }
+  initializeMotorTurn_End();   //brakes the motor
 }
 
 
@@ -308,15 +308,14 @@ void turnRight(int angle) {
       initializeTick();
       while (tick_R < (TURN_TICKS_R) || tick_L < (TURN_TICKS_R)) { // -16
         if (myPID.Compute())
-          //md.setSpeeds((currentSpeed + speed_O), -(currentSpeed - speed_O));
-          md.setSpeeds((currentSpeed + 2*speed_O), -(currentSpeed));
+          md.setSpeeds((currentSpeed + speed_O), -(currentSpeed - speed_O));
       }
-      initializeMotorTurn_End();
     }
   }
   if (angle - i > 0) {
     turnRightDeg(angle-i);
   }
+  initializeMotorTurn_End();   //brakes the motor
 }
 
 // will turn <90 degree
@@ -364,6 +363,7 @@ void initializeMotorFront_End() {
   md.setSpeeds(0, 0);
   //md.setBrakes(350, 347);
   //md.setBrakes(400, 400); // 365
+
   
   for (int i = 200; i <400; i+=50) {
     md.setBrakes(i*1.01, i);
@@ -405,12 +405,12 @@ void initializeMotor2_End() {
 void initializeMotor3_End() {
   md.setSpeeds(0, 0);
   //md.setBrakes(350, 347);
-  //md.setBrakes(400, 400);
-  
+  md.setBrakes(400, 400);
+  /*
   for (int i = 200; i <400; i+=50) {
     md.setBrakes(i*1.08, i);
     delay(20);
-  }
+  }*/
   delay(50);
 }
 
@@ -432,12 +432,12 @@ void initializeMotorBack_End() {
 void initializeMotorTurn_End() {
   md.setSpeeds(0, 0);
   //md.setBrakes(350, 347);
-  md.setBrakes(400, 400);
-  /*
+  //md.setBrakes(400, 400);
+  
   for (int i = 200; i <400; i+=50) {
     md.setBrakes(i, i);
     delay(6);
-  }*/
+  }
   delay(50);
 }
 
@@ -838,7 +838,7 @@ void alignFront() {
   double diffLeft = readFrontSensor_1() - desiredDistanceSensor1;
   double diffRight = readFrontSensor_3() - desiredDistanceSensor3;
 
-  while ((abs(diffLeft) > 0.2 && abs(diffLeft) < 10)|| (abs(diffRight) > 0.2 && abs(diffRight) < 10))
+  while ((abs(diffLeft) > 0.2 && abs(diffLeft) < 20)|| (abs(diffRight) > 0.2 && abs(diffRight) < 20))
   {   
     //Serial.println(diffLeft);
     //Serial.println(diffRight);
